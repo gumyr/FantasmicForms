@@ -14,4 +14,7 @@ Fantasmic Forms is an intuitive and adaptable web application tailored to stream
 
 Fantasmic Forms also allows users to import a Core Data File containing pre-defined elements for reference or template use. Once new elements are created using the 'Add <element>' button, they can be conveniently downloaded with a user-provided filename and seamlessly imported into their VTT system."
 
-[Screenshot](FantasmicFormsScreenshot.png)
+<p align="center">
+    <img alt="screenshot" src="FantasmicFormsScreenshot.png">
+</p>
+
