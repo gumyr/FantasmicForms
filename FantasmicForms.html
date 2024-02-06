@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasmic Forms</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <style>
+        .elementForm {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #ffeed488;
+        }
+
+        .collapsibleForm {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            background-color: transparent;
+        }
+
+        body {
+            background-image: url('FantasmicFormsBackground.jpeg');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        input:invalid {
+            border: 2px solid red;
+        }
+
+        h1 {
+            font-variant: small-caps;
+            color: #1f4248;
+            text-align: center;
+            text-shadow: 2px 2px 2px white;
+            margin: 0;
+            padding-top: 40px;
+            padding-bottom: 5px;
+            font-size: 50px;
+        }
+
+        #imageContainer {
+            position: relative;
+        }
+
+        img {
+            max-width: 50%;
+            max-height: 200px;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+
+        .version {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            color: white;
+        }
+
+        input:not([type="radio"]):not([type="checkbox"]):not([type="number"]),
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            background: transparent;
+        }
+
+        input[type="number"],
+        textarea {
+            box-sizing: border-box;
+            background: transparent;
+        }
+
+        .sidebar {
+            width: 230px;
+            position: fixed;
+            top: 100;
+            left: 0;
+            background-color: hsla(36, 100%, 92%, 0.533);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .content {
+            margin-left: 230px;
+            padding: 16px;
+        }
+
+        select {
+            background-color: hsla(36, 100%, 92%, 0.533);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button,
+        legend[type="button"] {
+            display: inline-block;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #ffeed499;
+        }
+
+        .title {
+            display: inline-block;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: larger;
+            font-weight: bold;
+        }
+
+        .collapsibleMulticolum {
+            column-count: 3;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: transparent;
+        }
+
+        .select2-container--default {
+            background-color: transparent;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: black;
+            line-height: 28px
+        }
+
+        .select2-dropdown {
+            background-color: #ffeed4cc;
+        }
+
+        .select2-selection__arrow {
+            background-color: #ffeed4cc;
+        }
+
+        select[type="largeDropdownSelect"] {
+            width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Fantasmic Forms</h1>
+    <div class="version">Version 2.0</div>
+
+    <div class="sidebar">
+        <fieldset>
+            <legend class="title">XML Datafiles</legend>
+
+            <label for="coreXMLFile">Core Data File</label>
+            <input type="file" id="coreXMLFile" accept=".xml"><br>
+            <br>
+
+            <label for="existingXMLFile">Existing User Data File</label>
+            <input type="file" id="existingXMLFile" accept=".xml"><br>
+            <br>
+
+            <label for="newXMLFileName">New User Data File</label>
+            <input type="text" class="sidebar-text" id="newXMLFileName" value="new_adventure.xml"
+                pattern="[A-Za-z_0-9]+.xml">
+            <br><br>
+            <button type="button" onclick="downloadXMLFile()">Download XML File</button>
+        </fieldset>
+
+        <fieldset>
+            <legend class="title">Add Element</legend>
+
+            <input type="radio" id="actionRadio" name="elementType" value="Action" onchange="showForm()">
+            <label type="radio" for="actionRadio" id="radioLabelAction">Action</label><br>
+
+            <input type="radio" id="lairRadio" name="elementType" value="Lair" onchange="showForm()">
+            <label type="radio" for="lairRadio" id="radioLabelLair">Lair</label><br>
+
+            <input type="radio" id="legendaryActionRadio" name="elementType" value="LegendaryAction"
+                onchange="showForm()">
+            <label type="radio" for="legendaryActionRadio" id="radioLabelLegendaryAction">LegendaryAction</label><br>
+
+            <input type="radio" id="monsterRadio" name="elementType" value="Monster" onchange="showForm()">
+            <label type="radio" for="monsterRadio" id="radioLabelMonster">Monster</label><br>
+
+            <input type="radio" id="playerCharacterRadio" name="elementType" value="PlayerCharacter"
+                onchange="showForm()">
+            <label type="radio" for="playerCharacterRadio" id="radioLabelPlayerCharacter">PlayerCharacter</label><br>
+
+            <input type="radio" id="reactionRadio" name="elementType" value="Reaction" onchange="showForm()">
+            <label type="radio" for="reactionRadio" id="radioLabelReaction">Reaction</label><br>
+
+            <input type="radio" id="spellRadio" name="elementType" value="Spell" onchange="showForm()">
+            <label type="radio" for="spellRadio" id="radioLabelSpell">Spell</label><br>
+
+            <input type="radio" id="traitRadio" name="elementType" value="Trait" onchange="showForm()">
+            <label type="radio" for="traitRadio" id="radioLabelTrait">Trait</label><br>
+        </fieldset>
+    </div>
+
+    <div class="content">
+        <form id="actionForm" class="elementForm">
+            <fieldset>
+                <legend class="title">Action</legend>
+                <label for="actionName">Name</label>
+                <input type="text" id="actionName" required>
+
+                <label for="actionSummary">Summary</label>
+                <input type="text" id="actionSummary">
+
+                <label for="actionParameters">Parameters</label>
+                <input type="text" id="actionParameters">
+
+                <label for="actionDescription">Description</label>
+                <input type="text" id="actionDescription">
+
+                <label for="actionAttackMod">Attack Mod: </label>
+                <input type="number" id="actionAttackMod"><br>
+
+                <label for="actionDamage">Damage {dice expression or value}</label>
+                <input type="text" id="actionDamage" pattern="\s*\d+|\d*d\d+\s*(\+\s*\d+)?\s*">
+                <fieldset>
+                    <legend type="button" id="actionDamageTypeButton">Damage Type</legend>
+                    <span id="actionDamageTypeRadio" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <label for="actionSecondaryDamage">Secondary Damage {dice expression or value}</label>
+                <input type="text" id="actionSecondaryDamage" pattern="\s*\d+|\d*d\d+\s*(\+\s*\d+)?\s*">
+                <fieldset>
+                    <legend type="button" id="actionSecondaryDamageTypeButton">Secondary Damage Type</legend>
+                    <span id="actionSecondaryDamageTypeRadio" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <label for="actionOngoingDamage">Ongoing Damage {dice expression or value}</label>
+                <input type="text" id="actionOngoingDamage" pattern="\s*\d+|\d*d\d+\s*(\+\s*\d+)?\s*">
+                <fieldset>
+                    <legend type="button" id="actionOngoingDamageTypeButton">Ongoing Damage Type</legend>
+                    <span id="actionOngoingDamageTypeRadio" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <label for="actionUses">Uses: </label>
+                <input type="number" id="actionUses"><br>
+
+                <label for="actionUses">Recharge {6 or [1-5]-6}</label>
+                <input type="text" id="actionRecharge" pattern="6|[1-5]-6">
+
+                <button type="button" onclick="generateActionXML()">Add Action</button>
+            </fieldset>
+        </form>
+        <form id="legendaryactionForm" class="elementForm">
+            <fieldset>
+                <legend class="title">Legendary Action</legend>
+                <label for="legendaryActionName">Name</label>
+                <input type="text" id="legendaryActionName" required>
+
+                <label for="legendaryActionSummary">Summary</label>
+                <input type="text" id="legendaryActionSummary">
+
+                <label for="legendaryActionUsed">Actions Used: </label>
+                <input type="number" id="legendaryActionUsed"><br>
+
+                <label for="legendaryActionDescription">Description</label>
+                <input type="text" id="legendaryActionDescription">
+
+                <label for="legendaryActionAttackMod">Attack Mod: </label>
+                <input type="number" id="legendaryActionAttackMod"><br>
+
+                <label for="legendaryActionDamage">Damage {dice expression or value}</label>
+                <input type="text" id="legendaryActionDamage" pattern="\s*\d+|\d*d\d+\s*(\+\s*\d+)?\s*">
+                <fieldset>
+                    <legend type="button" id="legendardyActionDamageTypeButton">Damage Type</legend>
+                    <span id="legendaryActionDamageTypeRadio" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <button type="button" onclick="generateLegendaryActionXML()">Add Legendary Action</button>
+            </fieldset>
+        </form>
+        <form id="monsterForm" class="elementForm">
+            <fieldset>
+                <legend class="title">Monster</legend>
+                <label for="monsterName">Name</label>
+                <input type="text" id="monsterName" required>
+
+                <div id="imageContainer">
+                    <label for="monsterImage">Image</label>
+                    <input type="file" id="monsterImage" accept="image/*"><br>
+                    <img id="monsterImagePreview" alt="Image Preview">
+                </div>
+
+                <label for="monsterIsUnique">Is Unique (NPC)</label>
+                <input type="checkbox" id="monsterIsUnique" value="">
+
+                <label for="monsterIsSwarm">Is Swarm</label>
+                <input type="checkbox" id="monsterIsSwarm" value=""><br>
+
+                <label for="monsterSize">Size</label>
+                <select id="monsterSize" required>
+                    <option value="Tiny">Tiny</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Large">Large</option>
+                    <option value="Huge">Huge</option>
+                    <option value="Gargantuan">Gargantuan</option>
+                </select><br>
+
+                <label for="monsterType">Type</label>
+                <select id="monsterType" required>
+                    <option value="Aberration">Aberration</option>
+                    <option value="Beast">Beast</option>
+                    <option value="Beasts">Beasts</option>
+                    <option value="Celestial">Celestial</option>
+                    <option value="Construct">Construct</option>
+                    <option value="Dragon">Dragon</option>
+                    <option value="Elemental">Elemental</option>
+                    <option value="Fey">Fey</option>
+                    <option value="Fiend">Fiend</option>
+                    <option value="Giant">Giant</option>
+                    <option value="Humanoid">Humanoid</option>
+                    <option value="Monstrosity">Monstrosity</option>
+                    <option value="Ooze">Ooze</option>
+                    <option value="Plant">Plant</option>
+                    <option value="Undead">Undead</option>
+                </select><br>
+
+                <label for="monsterSubType">Sub-Type</label>
+                <input type="text" id="monsterSubType">
+
+                <label for="monsterShapeChanger">Shape Changer</label>
+                <input type="checkbox" id="monsterShapeChanger" value=""><br>
+
+                <label for="monsterAlignment">Alignment</label>
+                <select id="monsterAlignment" required>
+                    <option value="Lawful Good">Lawful Good</option>
+                    <option value="Neutral Good">Neutral Good</option>
+                    <option value="Chaotic Good">Chaotic Good</option>
+                    <option value="Lawful Neutral">Lawful Neutral</option>
+                    <option value="Neutral" selected>Neutral</option>
+                    <option value="Chaotic Neutral">Chaotic Neutral</option>
+                    <option value="Lawful Evil">Lawful Evil</option>
+                    <option value="Neutral Evil">Neutral Evil</option>
+                    <option value="Chaotic Evil">Chaotic Evil</option>
+                    <option value="Any">Any</option>
+                    <option value="Any Alignment">Any Alignment</option>
+                    <option value="Any Chaotic Alignment">Any Chaotic Alignment</option>
+                    <option value="Any Evil Alignment">Any Evil Alignment</option>
+                    <option value="Unaligned">Unaligned</option>
+                    <option value="Neutral">Neutral</option>
+                    <option value="Lawful">Lawful</option>
+                    <option value="Any Non-Good Alignment">Any Non-Good Alignment</option>
+                    <option value="Any Non-Lawful Alignment">Any Non-Lawful Alignment</option>
+                    <option value="Neutral Good (50%) or Neutral Evil (50%)">Neutral Good (50%) or Neutral
+                        Evil (50%)</option>
+                </select><br>
+
+                <label for="monsterAC">AC {int optionally followed by text}</label>
+                <input type="text" id="monsterAC" value="10" pattern="\s*\d+(\s+.*)?" required><br>
+
+                <label for="monsterHP">HP {# or dice expression}</label>
+                <input type="text" id="monsterHP" pattern="\s*\d+|\d*d\d+\s*(\+\s*\d+)?\s*" required>
+
+                <label for="monsterHitDie">HitDie {#}: </label>
+                <input type="number" id="monsterHitDie" min="1" value="1"><br>
+
+                <label for="monsterSpeed">Speed</label>
+                <input type="text" id="monsterSpeed" value="30 ft.">
+
+                <label for="monsterAbilityScores">Ability Scores {6 comma separated #s}</label>
+                <input type="text" id="monsterAbilityScores" value="10, 10, 10, 10, 10, 10"
+                    pattern="\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*" required>
+
+
+                <label for="monsterSaves">Saves</label>
+                <input type="text" id="monsterSaves">
+
+                <label for="monsterSkills">Skills</label>
+                <input type="text" id="monsterSkills">
+
+                <fieldset>
+                    <legend type="button" id="monsterDamageVulnerabilitiesButton">Damage Vulnerabilities</legend>
+                    <span id="monsterDamageVulnerabilitiesCheckbox" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <fieldset>
+                    <legend type="button" id="monsterDamageResistancesButton">Damage Resistances</legend>
+                    <span id="monsterDamageResistancesCheckbox" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <fieldset>
+                    <legend type="button" id="monsterDamageImmunitiesButton">Damage Immunities</legend>
+                    <span id="monsterDamageImmunitiesCheckbox" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <fieldset>
+                    <legend type="button" id="monsterConditionImmunitiesButton">Condition Immunities</legend>
+                    <span id="monsterConditionImmunitiesCheckbox" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <label for="monsterSenses">Senses</label>
+                <input type="text" id="monsterSenses">
+
+                <label for="monsterPassivePerception">Passive Perception {int}: </label>
+                <input type="number" id="monsterPassivePerception" value="10"><br>
+
+                <label for="monsterLanguages">Languages</label>
+                <input type="text" id="monsterLanguages">
+
+                <label for="monsterChallenge">Challenge Rating {# or fraction}</label>
+                <input type="text" id="monsterChallenge" pattern="\d+|\d+/\d+">
+
+                <label for="monsterXP">XP {#}: </label>
+                <input type="number" id="monsterXP" pattern="\d+|\d+/\d+"><br>
+
+                <fieldset>
+                    <legend type="button" id="monsterSpellCasterButton">Spell Caster</legend>
+                    <span id="monsterSpellCaster" class="collapsibleForm">
+                        <label for="monsterCasterLevel">Caster Level: </label>
+                        <input type="number" id="monsterCasterLevel" value=""><br>
+
+                        <label for="monsterSpellCastAbility">Spell Cast Ability</label>
+                        <select id="monsterSpellCastAbility" required>
+                            <option value="WIS">WIS</option>
+                            <option value="INT">INT</option>
+                            <option value="CHA">CHA</option>
+                        </select><br>
+
+                        <label for="monsterSpellSaveDc">Spell Save DC: </label>
+                        <input type="number" id="monsterSpellSaveDc"><br>
+
+                        <label for="monsterSpellAttackBonus">Spell Attack Bonus: </label>
+                        <input type="number" id="monsterSpellAttackBonus"><br>
+
+                        <label for="monsterSpellSlots">Spell Slots {lowest to highest comma separated list of
+                            #s}</label>
+                        <input type="text" id="monsterSpellSlots" pattern="\d+(,\s*\d+)*">
+
+                        <fieldset>
+                            <legend>Cantrips</legend>
+                            <select id="cantripsLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('cantrip')">Add Cantrip</button><br>
+                            <input type="text" id="monstercantrips">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 1</legend>
+                            <select id="level1sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('1')">Add Level 1</button><br>
+                            <input type="text" id="monsterlevel1s">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 2</legend>
+                            <select id="level2sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('2')">Add Level 2</button><br>
+                            <input type="text" id="monsterlevel2s">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 3</legend>
+                            <select id="level3sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('3')">Add Level 3</button><br>
+                            <input type="text" id="monsterlevel3s">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 4</legend>
+                            <select id="level4sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('4')">Add Level 4</button><br>
+                            <input type="text" id="monsterlevel4s">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 5</legend>
+                            <select id="level5sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('5')">Add Level 5</button><br>
+                            <input type="text" id="monsterlevel5s">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 6</legend>
+                            <select id="level6sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('6')">Add Level 6</button><br>
+                            <input type="text" id="monsterlevel6s">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 7</legend>
+                            <select id="level7sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('7')">Add Level 7</button><br>
+                            <input type="text" id="monsterlevel7s">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 8</legend>
+                            <select id="level8sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('8')">Add Level 8</button><br>
+                            <input type="text" id="monsterlevel8s">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Level 9</legend>
+                            <select id="level9sLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterSpell('9')">Add Level 9</button><br>
+                            <input type="text" id="monsterlevel9s">
+                        </fieldset>
+                    </span>
+                </fieldset>
+
+                <fieldset>
+                    <legend type="button" id="monsterInnateSpellCasterButton">Innate Spell Caster</legend>
+                    <span id="monsterInnateSpellCaster" class="collapsibleForm">
+                        <label for="monsterInnateCasterLevel">Caster Level: </label>
+                        <input type="number" id="monsterInnateCasterLevel" value=""><br>
+
+                        <label for="monsterInnateSpellCastAbility">Spell Cast Ability</label>
+                        <select id="monsterInnateSpellCastAbility" required>
+                            <option value="WIS">WIS</option>
+                            <option value="INT">INT</option>
+                            <option value="CHA">CHA</option>
+                        </select><br>
+
+                        <label for="monsterInnateSpellSaveDc">Spell Save DC: </label>
+                        <input type="number" id="monsterInnateSpellSaveDc" value="10" required><br>
+
+                        <label for="monsterInnateSpellAttackBonus">Spell Attack Bonus: </label>
+                        <input type="number" id="monsterInnateSpellAttackBonus" value="1" required><br>
+
+                        <fieldset>
+                            <legend>At Will</legend>
+                            <select id="atwillsLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterElement('AtWill')">Add At Will</button><br>
+                            <input type="text" id="monsterAtWills">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Once per Day</legend>
+                            <select id="onceperdaysLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterElement('OncePerDay')">Add Once per
+                                Day</button><br>
+                            <input type="text" id="monsterOncePerDays">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Twice per Day</legend>
+                            <select id="twiceperdaysLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterElement('TwicePerDay')">Add Twice per
+                                Day</button><br>
+                            <input type="text" id="monsterTwicePerDays">
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Thrice per Day</legend>
+                            <select id="thriceperdaysLargeDropdown" type="largeDropdownSelect">
+                                <!--dynamic content-->
+                            </select>
+                            <button type="button" onclick="addMonsterElement('ThricePerDay')">Add Thrice per
+                                Day</button><br>
+                            <input type="text" id="monsterThricePerDays">
+                        </fieldset>
+                    </span>
+                </fieldset>
+
+                <label for="monsterRegeneration">Regeneration</label>
+                <input type="text" id="monsterRegeneration" pattern="\s*\d+\s*,\s*\d+\s*">
+
+                <fieldset>
+                    <legend>Traits</legend>
+                    <select id="traitsLargeDropdown" type="largeDropdownSelect">
+                        <!--dynamic content-->
+                    </select>
+                    <button type="button" onclick="addMonsterElement('Trait')">Add Trait</button><br>
+                    <input type="text" id="monsterTraits">
+                </fieldset>
+
+                <fieldset>
+                    <legend>Actions</legend>
+                    <select id="actionsLargeDropdown" type="largeDropdownSelect">
+                        <!--dynamic content-->
+                    </select>
+                    <button type="button" onclick="addMonsterElement('Action')">Add Action</button><br>
+                    <input type="text" id="monsterActions">
+                </fieldset>
+
+                <fieldset>
+                    <legend>Legendary Actions</legend>
+                    <select id="legendaryactionsLargeDropdown" type="largeDropdownSelect">
+                        <!--dynamic content-->
+                    </select>
+                    <button type="button" onclick="addMonsterElement('LegendaryAction')">Add Legendary
+                        Action</button><br>
+                    <input type="text" id="monsterLegendaryActions">
+                    <label for="monsterLegendaryActionCount">Legendary Action Count: </label>
+                    <input type="number" id="monsterLegendaryActionCount"><br>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Reactions</legend>
+                    <select id="reactionsLargeDropdown" type="largeDropdownSelect">
+                        <!--dynamic content-->
+                    </select>
+                    <button type="button" onclick="addMonsterElement('Reaction')">Add Reaction</button><br>
+                    <input type="text" id="monsterReactions">
+                </fieldset>
+
+                <label for="monsterSource">Source</label>
+                <input type="text" id="monsterSource">
+
+                <button type="button" onclick="generateMonsterXML()">Add Monster</button>
+            </fieldset>
+        </form>
+        <form id="playercharacterForm" class="elementForm">
+            <fieldset>
+                <legend class="title">Player Character</legend>
+                <label for="playerCharacterName">Name</label>
+                <input type="text" id="playerCharacterName" required>
+
+                <!-- <label for="playerCharacterID">id</label>
+                <input type="text" id="playerCharacterID" required> -->
+
+                <label for="playerCharacterRace">Race</label>
+                <input type="text" id="playerCharacterRace" required>
+
+                <label for="playerCharacterClass">Class</label>
+                <input type="text" id="playerCharacterClass" required>
+
+                <label for="playerCharacterSize">Size</label>
+                <select id="playerCharacterSize" required>
+                    <option value="Tiny">Tiny</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Large">Large</option>
+                    <option value="Huge">Huge</option>
+                    <option value="Gargantuan">Gargantuan</option>
+                </select>
+
+                <label for="playerCharacterAlignment">Alignment</label>
+                <select id="playerCharacterAlignment" required>
+                    <option value="Lawful Good">Lawful Good</option>
+                    <option value="Neutral Good">Neutral Good</option>
+                    <option value="Chaotic Good">Chaotic Good</option>
+                    <option value="Lawful Neutral">Lawful Neutral</option>
+                    <option value="Neutral">Neutral</option>
+                    <option value="Chaotic Neutral">Chaotic Neutral</option>
+                    <option value="Lawful Evil">Lawful Evil</option>
+                    <option value="Neutral Evil">Neutral Evil</option>
+                    <option value="Chaotic Evil">Chaotic Evil</option>
+                </select><br>
+
+                <label for="playerCharacterSenses">Senses</label>
+                <input type="text" id="playerCharacterSenses" required>
+
+                <label for="playerCharacterLanguages">Languages</label>
+                <input type="text" id="playerCharacterLanguages" required>
+
+                <label for="playerCharacterLevel">Level</label>
+                <input type="text" id="playerCharacterLevel">
+
+                <button type="button" onclick="generatePlayerCharacterXML()">Add PLayer Character</button>
+            </fieldset>
+        </form>
+        <form id="reactionForm" class="elementForm">
+            <fieldset>
+                <legend class="title">Reaction</legend>
+                <label for="reactionName">Name</label>
+                <input type="text" id="reactionName" required>
+
+                <label for="reactionSummary">Summary</label>
+                <input type="text" id="reactionSummary">
+
+                <label for="reactionRequired">Required</label>
+                <input type="checkbox" id="reactionRequired" value=""><br>
+
+                <label for="reactionParameters">Parameters</label>
+                <input type="text" id="reactionParameters">
+
+                <label for="reactionDescription">Description</label>
+                <input type="text" id="reactionDescription">
+
+                <button type="button" onclick="generateReactionXML()">Add Reaction</button>
+            </fieldset>
+        </form>
+        <form id="traitForm" class="elementForm">
+            <fieldset>
+                <legend class="title">Trait</legend>
+                <label for="traitName">Name</label>
+                <input type="text" id="traitName" required>
+
+                <label for="traitSummary">Summary</label>
+                <input type="text" id="traitSummary">
+
+                <label for="traitParameters">Parameters</label>
+                <input type="text" id="traitParameters">
+
+                <label for="traitDescription">Description</label>
+                <input type="text" id="traitDescription">
+
+                <label for="traitRelevance">Relevance</label>
+                <input type="text" id="traitRelevance">
+
+                <label for="traitRegeneration">Regeneration: </label>
+                <input type="number" id="traitRegeneration"><br>
+
+                <label for="traitDamage">Damage {dice expression or value}</label>
+                <input type="text" id="traitDamage" pattern="\s*\d+|\d*d\d+\s*(\+\s*\d+)?\s*">
+
+                <fieldset>
+                    <legend type="button" id="traitDamageTypeButton">Damage Type</legend>
+                    <span id="traitDamageTypeRadio" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+
+                <label for="traitUses">Uses: </label>
+                <input type="number" id="traitUses"><br>
+
+                <label for="traitRecharge">Recharge {6 or [1-5]-6}</label>
+                <input type="text" id="traitRecharge" pattern="6|[1-5]-6">
+
+                <button type="button" onclick="generateTraitXML()">Add Trait</button>
+            </fieldset>
+        </form>
+        <form id="spellForm" class="elementForm">
+            <fieldset>
+                <legend class="title">Spell</legend>
+                <label for="spellName">Name</label>
+                <input type="text" id="spellName" required>
+
+                <label for="spellSchool">School</label>
+                <select id="spellSchool" required>
+                    <option value="abjuration">abjuration</option>
+                    <option value="conjuration">conjuration</option>
+                    <option value="divination">divination</option>
+                    <option value="enchantment">enchantment</option>
+                    <option value="evocation">evocation</option>
+                    <option value="illusion">illusion</option>
+                    <option value="necromancy">necromancy</option>
+                    <option value="transmutation">transmutation</option>
+                </select>
+                <label for="spellRitual">Ritual</label>
+                <input type="checkbox" id="spellRitual" value=""><br>
+
+                <fieldset>
+                    <legend>Level</legend>
+                    <input type="radio" id="spellLevel0" name="spellLevelRadio" value="cantrip" checked>
+                    <label type="radio" for="spellLevel0">cantrip</label>
+                    <input type="radio" id="spellLevel1" name="spellLevelRadio" value="1">
+                    <label type="radio" for="spellLevel1">1</label>
+                    <input type="radio" id="spellLevel2" name="spellLevelRadio" value="2">
+                    <label type="radio" for="spellLevel2">2</label>
+                    <input type="radio" id="spellLevel3" name="spellLevelRadio" value="3">
+                    <label type="radio" for="spellLevel3" i>3</label>
+                    <input type="radio" id="spellLevel4" name="spellLevelRadio" value="4">
+                    <label type="radio" for="spellLevel4">4</label>
+                    <input type="radio" id="spellLevel5" name="spellLevelRadio" value="5">
+                    <label type="radio" for="spellLevel5">5</label>
+                    <input type="radio" id="spellLevel6" name="spellLevelRadio" value="6">
+                    <label type="radio" for="spellLevel6">6</label>
+                    <input type="radio" id="spellLevel7" name="spellLevelRadio" value="7">
+                    <label type="radio" for="spellLevel7">7</label>
+                    <input type="radio" id="spellLevel8" name="spellLevelRadio" value="8">
+                    <label type="radio" for="spellLevel8">8</label>
+                    <input type="radio" id="spellLevel9" name="spellLevelRadio" value="9">
+                    <label type="radio" for="spellLevel9">9</label>
+                </fieldset>
+
+                <label for="spellCastingTime">Casting Time</label>
+                <input type="text" id="spellCastingTime" required>
+
+                <label for="spellRange">Range</label>
+                <input type="text" id="spellRange" required>
+
+                <label for="spellComponents">Components</label>
+                <input type="text" id="spellComponents" required>
+
+                <label for="spellDuration">Duration</label>
+                <input type="text" id="spellDuration" required>
+
+                <label for="spellDescription">Description</label>
+                <input type="text" id="spellDescription" required>
+
+                <fieldset>
+                    <legend type="button" id="spellAttackButton">Spell Attack</legend>
+                    <span id="spellAttack" class="collapsibleForm">
+
+                        <label for="spellAttackAmount">Amount</label>
+                        <input type="text" id="spellAttackAmount">
+
+                        <label for="spellAttackRoll">Attack Roll</label>
+                        <input type="checkbox" id="spellAttackRoll" value=""><br>
+
+                        <label for="spellAttacks">Attacks: </label>
+                        <input type="number" id="spellAttacks" value=""><br>
+
+                        <label for="spellExtraAttackPerLevels">Extra Attack Per Levels: </label>
+                        <input type="number" id="spellExtraAttackPerLevels" value=""><br>
+                    </span>
+                </fieldset>
+
+                <fieldset>
+                    <legend type="button" id="spellDamageButton">Condition/Damage</legend>
+                    <span id="spellDamageRadio" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+                <fieldset>
+                    <legend type="button" id="spellOngoingDamageButton">Ongoing Condition/Damage</legend>
+                    <span id="spellOngoingDamageRadio" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+                <fieldset>
+                    <legend type="button" id="spellSecondaryDamageButton">Secondary Condition/Damage</legend>
+                    <span id="spellSecondaryDamageRadio" class="collapsibleMulticolum">
+                        <!--dynamic content-->
+                    </span>
+                </fieldset>
+            </fieldset>
+        </form>
+        <form id="lairForm" class="elementForm">
+            <fieldset>
+                <legend class="title">Lair</legend>
+                <label for="lairName">Name</label>
+                <input type="text" id="lairName" required>
+
+                <!-- <label for="lairID">id</label>
+                <input type="text" id="lairID" required> -->
+
+                <label for="lairSummary">Summary</label>
+                <input type="text" id="lairSummary">
+
+                <label for="lairImage">Image</label>
+                <input type="file" id="lairImage">
+
+                <label for="lairDescription">Description</label>
+                <input type="text" id="lairDescription">
+
+                <label for="lairTraits">Traits</label>
+                <input type="text" id="lairTraits">
+
+                <label for="lairActions">Actions</label>
+                <input type="text" id="lairActions">
+            </fieldset>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        // xml document global variables
+        var userXmlDoc = document.implementation.createDocument(null, null, null);
+        var coreXmlDoc = document.implementation.createDocument(null, null, null);
+
+        // Update long selects
+        function updateLongSelects() {
+            const elementNames = ["Trait", "Action", "LegendaryAction", "Reaction", "Spell"];
+            for (let elementName of elementNames) {
+                var userXmlElements = userXmlDoc.querySelectorAll(elementName);
+                var coreXmlElements = coreXmlDoc.querySelectorAll(elementName);
+
+                var nameAttributes = [""];
+                userXmlElements.forEach(function (element) {
+                    var nameAttribute = element.getAttribute("name");
+                    nameAttributes.push(nameAttribute);
+                });
+                coreXmlElements.forEach(function (element) {
+                    var nameAttribute = element.getAttribute("name");
+                    nameAttributes.push(nameAttribute);
+                });
+                // Initialize Select2
+                $(`#${elementName.toLowerCase()}sLargeDropdown`).select2({
+                    data: nameAttributes.map(function (option) {
+                        return { id: option, text: option };
+                    }),
+                    placeholder: `Select ${elementName}`,
+                });
+            }
+            const spellLevels = ["cantrip", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+            for (let spellLevel of spellLevels) {
+                var userXmlElements = userXmlDoc.querySelectorAll(`Spell[level='${spellLevel}']`);
+                var coreXmlElements = coreXmlDoc.querySelectorAll(`Spell[level='${spellLevel}']`);
+
+                var nameAttributes = [""];
+                userXmlElements.forEach(function (element) {
+                    var nameAttribute = element.getAttribute("name");
+                    nameAttributes.push(nameAttribute);
+                });
+                coreXmlElements.forEach(function (element) {
+                    var nameAttribute = element.getAttribute("name");
+                    nameAttributes.push(nameAttribute);
+                });
+                // Initialize Select2
+                var spellElement = spellLevel == "cantrip" ? spellLevel : 'level' + spellLevel;
+                $(`#${spellElement}sLargeDropdown`).select2({
+                    data: nameAttributes.map(function (option) {
+                        return { id: option, text: option };
+                    }),
+                    placeholder: `Select ${spellElement}`,
+                });
+            }
+            const innateFrequencies = ["AtWill", "OncePerDay", "TwicePerDay", "ThricePerDay"];
+            for (let innateFrequency of innateFrequencies) {
+                var userXmlElements = userXmlDoc.querySelectorAll("Spell");
+                var coreXmlElements = coreXmlDoc.querySelectorAll("Spell");
+
+                var nameAttributes = [""];
+                userXmlElements.forEach(function (element) {
+                    var nameAttribute = element.getAttribute("name");
+                    nameAttributes.push(nameAttribute);
+                });
+                coreXmlElements.forEach(function (element) {
+                    var nameAttribute = element.getAttribute("name");
+                    nameAttributes.push(nameAttribute);
+                });
+                // Initialize Select2
+                $(`#${innateFrequency.toLowerCase()}sLargeDropdown`).select2({
+                    data: nameAttributes.map(function (option) {
+                        return { id: option, text: option };
+                    }),
+                    placeholder: `Select ${innateFrequency}`,
+                });
+            }
+
+
+        }
+        // Make the relevant forms visible
+        function showForm() {
+            updateLongSelects();
+            const elementTypeRadios = document.getElementsByName('elementType');
+            var selectedElementType;
+            elementTypeRadios.forEach(radio => {
+                if (radio.checked) {
+                    selectedElementType = radio.value;
+                }
+            });
+            // Hide all forms
+            const forms = document.querySelectorAll('.elementForm');
+            forms.forEach(form => (form.style.display = 'none'));
+
+            const collapsible = document.querySelectorAll('.collapsible');
+            collapsible.forEach(span => (span.style.display = 'none'));
+
+            const collapsibleMulticolum = document.querySelectorAll('.collapsibleMulticolum');
+            collapsibleMulticolum.forEach(span => (span.style.display = 'none'));
+
+            // Show selected form
+            if (selectedElementType) {
+                var formId = selectedElementType.toLowerCase() + "Form"
+                const selectedForm = document.getElementById(formId);
+                if (selectedForm) {
+                    selectedForm.style.display = 'block';
+                }
+            }
+        }
+
+        // Convert a string to Pascal case as an id
+        function toPascalCase(str) {
+            // Convert to Pascal case and then remove spaces
+            return str.replace(/\w+/g, function (w) {
+                return w[0].toUpperCase() + w.slice(1).toLowerCase();
+            }).replace(/\s+/g, '').replace(/[^A-Za-z0-9_]+/g, '');
+        }
+
+        function toCamelCase(str) {
+            return str[0].toLowerCase() + str.slice(1);
+        }
+        // Download the xml file being contructed (will appear in the user's downloads folder)
+        function downloadXMLFile() {
+            var newXMLFileName = document.getElementById('newXMLFileName').value;
+
+            // Serialize the XML document to a string
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+
+            // Create a Blob from the XML string
+            var blob = new Blob([xmlString], { type: 'text/xml' });
+
+            // Create a download link
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = newXMLFileName;
+
+            // Append the link to the document
+            document.body.appendChild(link);
+
+            // Trigger a click on the link to start the download
+            link.click();
+
+            // Remove the link from the document
+            document.body.removeChild(link);
+        }
+
+        // Update the element counts in the 'Add Element' section
+        function updateElementCounts() {
+            // Update the element counts from the current xmlDoc
+            var elements = ["Action", "Lair", "LegendaryAction", "Monster", "PlayerCharacter",
+                "Reaction", "Spell", "Trait"]
+            for (let element of elements) {
+
+                var userXmlElements = userXmlDoc.querySelectorAll(element);
+                var coreXmlElements = coreXmlDoc.querySelectorAll(element);
+                var radioLabelAction = document.getElementById('radioLabel' + element);
+                radioLabelAction.textContent = element +
+                    " (" + userXmlElements.length + "/" + coreXmlElements.length + ")"
+            }
+        }
+
+        // Create the xml document based on the user's inputs
+        function generateActionXML() {
+            // Fetch attribute values from form fields
+            const id = document.getElementById('actionID').value.trim();
+
+            // Create the parent element
+            var actionElement = userXmlDoc.createElement("Action");
+            // Add an attribute to the Action element
+            actionElement.setAttribute("id", id);
+
+            // Create child elements and set their values
+            var elements = ["Name", "Parameters", "Description", "AttackMod", "Damage", "SecondaryDamage", "OngoingDamage", "Uses", "Recharge"]
+            for (let element of elements) {
+                var elementID = "action" + element
+                var elementValue = document.getElementById(elementID).value.trim()
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    actionElement.appendChild(xmlElement);
+
+                    if (element === "Damage") {
+                        var damageTypeElement = userXmlDoc.createElement("DamageType");
+                        const damageType = document.getElementById('actionDamageType').value.trim();
+                        damageTypeElement.textContent = damageType;
+                        actionElement.appendChild(damageTypeElement);
+                    }
+                    if (element === "SecondaryDamage") {
+                        var damageTypeElement = userXmlDoc.createElement("SecondaryDamageType");
+                        const damageType = document.getElementById('actionSecondaryDamageType').value.trim();
+                        damageTypeElement.textContent = damageType;
+                        actionElement.appendChild(damageTypeElement);
+                    }
+                    if (element === "OngoingDamage") {
+                        var damageTypeElement = userXmlDoc.createElement("OngoingDamageType");
+                        const damageType = document.getElementById('actionOngoingDamageType').value.trim();
+                        damageTypeElement.textContent = damageType;
+                        actionElement.appendChild(damageTypeElement);
+                    }
+                }
+            }
+
+            // Add the Action element to the root element or any other appropriate parent
+            userXmlDoc.documentElement.appendChild(actionElement);
+
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+            console.log(xmlString);
+            updateElementCounts()
+        }
+
+        function generateLegendaryActionXML() {
+            // Fetch values from form fields
+            const id = document.getElementById('legendaryActionID').value.trim();
+
+            // Create the parent element
+            var legendaryActionElement = userXmlDoc.createElement("LegendaryAction");
+            // Add an attribute to the LegendaryAction element
+            legendaryActionElement.setAttribute("id", id);
+
+            // Create child elements and set their values
+            var elements = ["Name", "Used", "Description", "AttackMod", "Damage"]
+            for (let element of elements) {
+                var elementID = "legendaryAction" + element
+                var elementValue = document.getElementById(elementID).value.trim()
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    legendaryActionElement.appendChild(xmlElement);
+
+                    if (element === "Damage") {
+                        var damageTypeElement = userXmlDoc.createElement("DamageType");
+                        const damageType = document.getElementById('legendaryActionDamageType').value.trim();
+                        damageTypeElement.textContent = damageType;
+                        legendaryActionElement.appendChild(damageTypeElement);
+                    }
+                }
+            }
+
+            // Add the Action element to the root element or any other appropriate parent
+            userXmlDoc.documentElement.appendChild(legendaryActionElement);
+
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+            console.log(xmlString);
+            updateElementCounts()
+        }
+
+        function generateMonsterXML() {
+            // Fetch attribute values from form fields
+            const name = document.getElementById('monsterName').value.trim();
+            const spellCaster = document.getElementById('monsterEnableSpellCasting').checked;
+            const innateSpellCaster = document.getElementById('monsterEnableInnateSpellCasting').checked;
+            // Create the parent element
+            var monsterElement = userXmlDoc.createElement("Monster");
+            // Add an attribute to the Action element
+            monsterElement.setAttribute("name", name);
+
+            // Create child elements and set their values
+            var elements = ["ID", "Image", "Size", "Type", "SubType", "ShapeChanger", "Alignment", "AC",
+                "HP", "HitDie", "Speed", "AbilityScores", "Saves", "Skills", "DamageVulnerabilities",
+                "DamageResistances", "DamageImmunities", "ConditionImmunities", "Senses", "PassivePerception",
+                "Languages", "Challenge", "XP"]
+            for (let element of elements) {
+                var elementID = "monster" + element
+                if (element === "Image") {
+                    var elementValue = document.getElementById(elementID).files[0].name
+                } else {
+                    var elementValue = document.getElementById(elementID).value.trim()
+                }
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    monsterElement.appendChild(xmlElement);
+
+                }
+            }
+            if (spellCaster) {
+                var spellCastingElement = userXmlDoc.createElement("SpellCasting");
+                var elements = ["CasterLevel", "SpellCastAbility", "SpellSaveDc", "SpellAttackBonus", "SpellSlots"]
+                for (let element of elements) {
+                    var elementID = element
+                    var elementValue = document.getElementById(elementID).value.trim()
+                    if (!(elementValue === "")) {
+                        var xmlElement = userXmlDoc.createElement(element);
+                        xmlElement.textContent = elementValue;
+                        spellCastingElement.appendChild(xmlElement);
+
+                    }
+                }
+                var spellsElement = userXmlDoc.createElement("Spells");
+                var elements = ["Cantrips", "Level1", "Level2", "Level3", "Level5", "Level5", "Level6", "Level7",
+                    "Level8", "Level9"]
+                for (let element of elements) {
+                    var elementValue = document.getElementById(element).value.trim()
+                    if (!(elementValue === "")) {
+                        var xmlElement = userXmlDoc.createElement(element);
+                        xmlElement.textContent = elementValue;
+                        spellsElement.appendChild(xmlElement);
+                    }
+                }
+                spellCastingElement.appendChild(spellsElement)
+                monsterElement.appendChild(spellCastingElement);
+            }
+            if (innateSpellCaster) {
+                var innateSpellCastingElement = userXmlDoc.createElement("InnateSpellCasting");
+                var elements = ["CasterLevel", "SpellCastAbility", "SpellSaveDc", "SpellAttackBonus"]
+                for (let element of elements) {
+                    var elementID = "innate" + element
+                    var elementValue = document.getElementById(element).value.trim()
+                    if (!(elementValue === "")) {
+                        var xmlElement = userXmlDoc.createElement(element);
+                        xmlElement.textContent = elementValue;
+                        innateSpellCastingElement.appendChild(xmlElement);
+
+                    }
+                }
+                var spellsElement = userXmlDoc.createElement("Spells");
+                var elements = ["AtWill", "OncePerDay", "TwicePerDay", "ThricePerDay"]
+                for (let element of elements) {
+                    var elementValue = document.getElementById(element).value.trim()
+                    if (!(elementValue === "")) {
+                        var xmlElement = userXmlDoc.createElement(element);
+                        xmlElement.textContent = elementValue;
+                        spellsElement.appendChild(xmlElement);
+                    }
+                }
+                innateSpellCastingElement.appendChild(spellsElement)
+                monsterElement.appendChild(innateSpellCastingElement);
+            }
+            var elements = ["Regeneration", "Traits", "Actions", "LegendaryActions", "LegendaryActionCount",
+                "Reactions", "Source"];
+            for (let element of elements) {
+                var elementID = "monster" + element
+                var elementValue = document.getElementById(elementID).value.trim()
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    monsterElement.appendChild(xmlElement);
+
+                }
+            }
+
+            // Add the Action element to the root element or any other appropriate parent
+            userXmlDoc.documentElement.appendChild(monsterElement);
+
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+            console.log(xmlString);
+            updateElementCounts()
+        }
+
+        function generateNPCXML() {
+            // Fetch attribute values from form fields
+            const name = document.getElementById('npcName').value.trim();
+            const race = document.getElementById('npcRace').value.trim();
+            const spellCaster = document.getElementById('npcEnableSpellCasting').checked;
+            const innateSpellCaster = document.getElementById('npcEnableInnateSpellCasting').checked;
+            // Create the parent element
+            var npcElement = userXmlDoc.createElement("NPC");
+            // Add an attribute to the Action element
+            npcElement.setAttribute("name", name);
+            npcElement.setAttribute("race", race);
+
+            // Create child elements and set their values
+            var elements = ["ID", "Image", "Size", "Type", "SubType", "ShapeChanger", "Alignment", "AC",
+                "HP", "HitDie", "Speed", "AbilityScores", "Saves", "Skills", "DamageVulnerabilities",
+                "DamageResistances", "DamageImmunities", "ConditionImmunities", "Senses", "PassivePerception",
+                "Languages", "Challenge", "XP"]
+            for (let element of elements) {
+                var elementID = "npc" + element
+                if (element === "Image") {
+                    var elementValue = document.getElementById(elementID).files[0].name
+                } else {
+                    var elementValue = document.getElementById(elementID).value.trim()
+                }
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    npcElement.appendChild(xmlElement);
+
+                }
+            }
+            if (spellCaster) {
+                var spellCastingElement = userXmlDoc.createElement("SpellCasting");
+                var elements = ["CasterLevel", "SpellCastAbility", "SpellSaveDc", "SpellAttackBonus", "SpellSlots"]
+                for (let element of elements) {
+                    var elementID = element
+                    var elementValue = document.getElementById(elementID).value.trim()
+                    if (!(elementValue === "")) {
+                        var xmlElement = userXmlDoc.createElement(element);
+                        xmlElement.textContent = elementValue;
+                        spellCastingElement.appendChild(xmlElement);
+
+                    }
+                }
+                var spellsElement = userXmlDoc.createElement("Spells");
+                var elements = ["Cantrips", "Level1", "Level2", "Level3", "Level5", "Level5", "Level6", "Level7",
+                    "Level8", "Level9"]
+                for (let element of elements) {
+                    var elementValue = document.getElementById(element).value.trim()
+                    if (!(elementValue === "")) {
+                        var xmlElement = userXmlDoc.createElement(element);
+                        xmlElement.textContent = elementValue;
+                        spellsElement.appendChild(xmlElement);
+                    }
+                }
+                spellCastingElement.appendChild(spellsElement)
+                npcElement.appendChild(spellCastingElement);
+            }
+            if (innateSpellCaster) {
+                var innateSpellCastingElement = userXmlDoc.createElement("InnateSpellCasting");
+                var elements = ["CasterLevel", "SpellCastAbility", "SpellSaveDc", "SpellAttackBonus"]
+                for (let element of elements) {
+                    var elementID = "innate" + element
+                    var elementValue = document.getElementById(element).value.trim()
+                    if (!(elementValue === "")) {
+                        var xmlElement = userXmlDoc.createElement(element);
+                        xmlElement.textContent = elementValue;
+                        innateSpellCastingElement.appendChild(xmlElement);
+
+                    }
+                }
+                var spellsElement = userXmlDoc.createElement("Spells");
+                var elements = ["AtWill", "OncePerDay", "TwicePerDay", "ThricePerDay"]
+                for (let element of elements) {
+                    var elementValue = document.getElementById(element).value.trim()
+                    if (!(elementValue === "")) {
+                        var xmlElement = userXmlDoc.createElement(element);
+                        xmlElement.textContent = elementValue;
+                        spellsElement.appendChild(xmlElement);
+                    }
+                }
+                innateSpellCastingElement.appendChild(spellsElement)
+                npcElement.appendChild(innateSpellCastingElement);
+            }
+            var elements = ["Regeneration", "Traits", "Actions", "LegendaryActions", "LegendaryActionCount",
+                "Reactions", "Source"];
+            for (let element of elements) {
+                var elementID = "npc" + element
+                var elementValue = document.getElementById(elementID).value.trim()
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    npcElement.appendChild(xmlElement);
+
+                }
+            }
+
+            // Add the Action element to the root element or any other appropriate parent
+            userXmlDoc.documentElement.appendChild(npcElement);
+
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+            console.log(xmlString);
+            updateElementCounts()
+        }
+
+        function generatePlayerCharacterXML() {
+            // Fetch attribute values from form fields
+            const name = document.getElementById('pcName').value.trim();
+            const race = document.getElementById('pcRace').value.trim();
+            const pcClass = document.getElementById('pcClass').value.trim();
+
+            // Create the parent element
+            var actionElement = userXmlDoc.createElement("PlayerCharacter");
+            // Add an attribute to the Action element
+            actionElement.setAttribute("name", name);
+            actionElement.setAttribute("race", race);
+            actionElement.setAttribute("class", pcClass);
+
+            // Create child elements and set their values
+            var elements = ["ID", "Size", "Alignment", "Senses", "Languages", "Level"]
+            for (let element of elements) {
+                var elementID = "playerCharacter" + element
+                var elementValue = document.getElementById(elementID).value.trim()
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    actionElement.appendChild(xmlElement);
+                }
+            }
+
+            // Add the Action element to the root element or any other appropriate parent
+            userXmlDoc.documentElement.appendChild(actionElement);
+
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+            console.log(xmlString);
+            updateElementCounts()
+        }
+
+        function generateReactionXML() {
+            // Fetch attribute values from form fields
+            const id = document.getElementById('reactionID').value.trim();
+            const required = document.getElementById('reactionRequired').value;
+
+            // Create the parent element
+            var reactionElement = userXmlDoc.createElement("Reaction");
+            // Add an attribute to the Reaction element
+            reactionElement.setAttribute("id", id);
+            reactionElement.setAttribute("required", required);
+
+            // Create child elements and set their values
+            var elements = ["Name", "Parameters", "Description"]
+            for (let element of elements) {
+                var elementID = "reaction" + element
+                var elementValue = document.getElementById(elementID).value.trim()
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    reactionElement.appendChild(xmlElement);
+                }
+            }
+
+            // Add the Action element to the root element or any other appropriate parent
+            userXmlDoc.documentElement.appendChild(reactionElement);
+
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+            console.log(xmlString);
+            updateElementCounts()
+        }
+
+        function generateTraitXML() {
+            // Fetch attribute values from form fields
+            const id = document.getElementById('traitID').value.trim();
+
+            // Create the parent element
+            var traitElement = userXmlDoc.createElement("Trait");
+            // Add an attribute to the Action element
+            traitElement.setAttribute("id", id);
+
+            // Create child elements and set their values
+            var elements = ["Name", "Parameters", "Description", "Relevance", "Regeneration", "Damage", "Uses", "Recharge"]
+            for (let element of elements) {
+                var elementID = "trait" + element
+                var elementValue = document.getElementById(elementID).value.trim()
+                if (!(elementValue === "")) {
+                    var xmlElement = userXmlDoc.createElement(element);
+                    xmlElement.textContent = elementValue;
+                    traitElement.appendChild(xmlElement);
+
+                    if (element === "Damage") {
+                        var damageTypeElement = userXmlDoc.createElement("DamageType");
+                        const damageType = document.getElementById('traitDamageType').value.trim();
+                        damageTypeElement.textContent = damageType;
+                        traitElement.appendChild(damageTypeElement);
+                    }
+                }
+            }
+
+            // Add the Action element to the root element or any other appropriate parent
+            userXmlDoc.documentElement.appendChild(traitElement);
+
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+            console.log(xmlString);
+            updateElementCounts()
+        }
+
+        function clearForm(formId) {
+            var form = document.getElementById(formId);
+
+            if (form) {
+                // Iterate through all form elements
+                Array.from(form.elements).forEach(function (element) {
+
+
+                    // Check if the element is a form control (input, select, textarea)
+                    if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+                        // Reset the value
+                        var labelElement = document.querySelector('label[for="' + element + '"]');
+                        if (!labelElement === 'Name') {
+                            element.value = '';
+                        }
+
+                        // For checkboxes, also uncheck them
+                        if (element.type === 'checkbox' || element.type === 'radio') {
+                            element.checked = false;
+                        }
+                    }
+                });
+            }
+        }
+
+        function fillFormFromXML(elementName, attributeValue) {
+            // if (["Monster", "PlayerCharacter"].includes(elementName)) {
+            var xpathExpression = "//" + elementName + "[@name='" + attributeValue + "']";
+            // } else {
+            //     var xpathExpression = "//" + elementName + "[@id='" + attributeValue + "']";
+            // }
+            console.log(xpathExpression)
+            var result = userXmlDoc.evaluate(xpathExpression, userXmlDoc, null, XPathResult.ANY_TYPE, null);
+            // If not in userXmlDoc search in the coreXmlDoc
+            var coreXmlNode = result.iterateNext();
+            if (!coreXmlNode) {
+                result = coreXmlDoc.evaluate(xpathExpression, coreXmlDoc, null, XPathResult.ANY_TYPE, null);
+                coreXmlNode = result.iterateNext();
+            }
+            var cleared = false
+            while (coreXmlNode) {
+                console.log(coreXmlNode)
+                for (var i = 0; i < coreXmlNode.children.length; i++) {
+                    var coreXmlchildNode = coreXmlNode.children[i];
+
+                    if (["Image"].includes(coreXmlchildNode.nodeName)) continue;
+
+                    var htmlElementId = elementName.substring(0, 3).toLowerCase() + elementName.slice(3) + coreXmlchildNode.nodeName
+
+                    console.log(htmlElementId);
+                    var formElement = document.getElementById(htmlElementId);
+                    if (!cleared) {
+                        formId = formElement.form.id
+                        console.log(formId)
+                        clearForm(formId)
+                        cleared = true
+                    }
+
+                    if (formElement) {  // text values
+                        if (htmlElementId === 'InnateSpellCasting') {
+                            console.log("Innate spell casting")
+                        } else if ((formElement.type === 'text') || (formElement.tagName === 'SELECT')) {
+                            var newhtmlElementValue = coreXmlchildNode.textContent.replace(/\t/g, '').replace(/\n/g, '');
+                            formElement.value = newhtmlElementValue;
+                        } else if (formElement.type === 'checkbox') {
+                            formElement.checked = "true"
+                        } else {
+                            console.log(formElement, "not text, select, or checkbox")
+                        }
+                    } else { // checkbox and radio values
+                        for (var j = 0; j < coreXmlchildNode.children.length; j++) {
+                            subElement = coreXmlchildNode.children[j]
+                            subValue = subElement.textContent
+                            var radio = document.querySelector('input[name="' + htmlElementId + '"][value="' + subValue + '"]');
+                            if (radio) {
+                                radio.checked = true;
+                            } else {
+                                console.log("ERROR: " + htmlElementId + "/" + newhtmlElementValue + " missisng")
+                            }
+                        }
+                    }
+                }
+                // Use elementName and elementValue as needed
+                console.log("Element Name:", coreXmlchildNode.nodeName, "Value:", newhtmlElementValue);
+                // Process the matching node
+                // console.log(node);
+                coreXmlNode = result.iterateNext();
+            }
+        }
+
+        //
+        // Event Listeners
+        //
+
+        // On page load, setup the xmlDoc
+        document.addEventListener('DOMContentLoaded', function () {
+            showForm();
+
+            // Create the XML declaration
+            var xmlDeclaration = userXmlDoc.createProcessingInstruction("xml", 'version="1.0" encoding="UTF-8"');
+
+            // Append the XML declaration to the document
+            userXmlDoc.insertBefore(xmlDeclaration, userXmlDoc.firstChild);
+
+            // Create the root element
+            var rootElement = userXmlDoc.createElement("Root");
+
+            // Add attributes to the root element
+            rootElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            rootElement.setAttribute("xsi:noNamespaceSchemaLocation", "dm_assist.xsd");
+
+            // Append the root element to the document
+            userXmlDoc.appendChild(rootElement);
+            var xmlString = new XMLSerializer().serializeToString(userXmlDoc);
+            console.log(xmlString);
+
+        });
+
+        // Dyanmically create an object to track button states from a list of buttons
+        function createObject(keys) {
+            var dynamicObject = {};
+
+            keys.forEach(function (key) {
+                dynamicObject[key] = false;
+            });
+
+            return dynamicObject;
+        }
+
+        // Create an object that tracks the state of the collapsible forms
+        var collapsibleButtonList = [
+            "actionDamageTypeButton",
+            "actionSecondaryDamageTypeButton",
+            "actionOngoingDamageTypeButton",
+            "legendardyActionDamageTypeButton",
+            "monsterDamageVulnerabilitiesButton",
+            "monsterDamageResistancesButton",
+            "monsterDamageImmunitiesButton",
+            "monsterConditionImmunitiesButton",
+            "monsterSpellCasterButton",
+            "monsterInnateSpellCasterButton",
+            "traitDamageTypeButton",
+            "spellAttackButton",
+            "spellDamageButton",
+            "spellOngoingDamageButton",
+            "spellSecondaryDamageButton",
+        ];
+        var collapsibleButtonObject = createObject(collapsibleButtonList);
+
+        function addToggleListener(buttonId, collapsibleId) {
+            document.getElementById(buttonId).addEventListener('click', function () {
+                const collapsible = document.getElementById(collapsibleId);
+
+                // Toggle the state of the button
+                collapsibleButtonObject[buttonId] = !collapsibleButtonObject[buttonId]
+
+                // Toggle display based on checkbox state
+                collapsible.style.display = collapsibleButtonObject[buttonId] ? 'block' : 'none';
+            });
+        }
+
+        // Create button listeners that control collapsible forms
+        addToggleListener('actionDamageTypeButton', 'actionDamageTypeRadio');
+        addToggleListener('actionSecondaryDamageTypeButton', 'actionSecondaryDamageTypeRadio');
+        addToggleListener('actionOngoingDamageTypeButton', 'actionSecondaryDamageTypeRadio');
+        addToggleListener('legendardyActionDamageTypeButton', 'legendaryActionDamageTypeRadio');
+        addToggleListener('monsterDamageVulnerabilitiesButton', 'monsterDamageVulnerabilitiesCheckbox');
+        addToggleListener('monsterDamageResistancesButton', 'monsterDamageResistancesCheckbox');
+        addToggleListener('monsterDamageImmunitiesButton', 'monsterDamageImmunitiesCheckbox');
+        addToggleListener('monsterConditionImmunitiesButton', 'monsterConditionImmunitiesCheckbox');
+        addToggleListener('monsterSpellCasterButton', 'monsterSpellCaster');
+        addToggleListener('monsterInnateSpellCasterButton', 'monsterInnateSpellCaster');
+        addToggleListener('traitDamageTypeButton', 'traitDamageTypeRadio');
+        addToggleListener('spellAttackButton', 'spellAttack');
+        addToggleListener('spellDamageButton', 'spellDamageRadio');
+        addToggleListener('spellOngoingDamageButton', 'spellOngoingDamageRadio');
+        addToggleListener('spellSecondaryDamageButton', 'spellSecondaryDamageRadio');
+
+
+        // Attach the function to the file input change event
+        document.getElementById('monsterImage').addEventListener('change', displayMonsterImage);
+        function displayMonsterImage() {
+            var input = document.getElementById('monsterImage');
+            var previewImage = document.getElementById('monsterImagePreview');
+
+            // Check if a file is selected
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Update the source of the preview image
+                    previewImage.src = e.target.result;
+                };
+
+                // Read the selected file as a data URL
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Generate listeners for the name elements that will fill out the form on a match
+        const sidebarElements = ["Action", "Lair", "LegendaryAction", "Monster", "PlayerCharacter",
+            "Reaction", "Spell", "Trait"]
+        // Loop through the element types and create event listeners
+        sidebarElements.forEach(sidebarElement => {
+            const inputElement = document.getElementById(`${toCamelCase(sidebarElement)}Name`);
+
+            inputElement.addEventListener('input', function () {
+                fillFormFromXML(sidebarElement, inputElement.value);
+            });
+        });
+
+        // Open Core XML File and update coreXmlDoc with contents
+        document.getElementById('coreXMLFile').addEventListener('change', handleCoreFileSelect);
+        function handleCoreFileSelect(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            const parser = new DOMParser();
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const xmlContent = e.target.result;
+                    coreXmlDoc = parser.parseFromString(xmlContent, 'application/xml');
+                    updateElementCounts()
+                };
+                reader.readAsText(file);
+                updateLongSelects();
+            }
+        }
+
+
+        // Open XML File and update userXmlDoc with contents
+        document.getElementById('existingXMLFile').addEventListener('change', handleUserFileSelect);
+        function handleUserFileSelect(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            const parser = new DOMParser();
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const xmlContent = e.target.result;
+                    userXmlDoc = parser.parseFromString(xmlContent, 'application/xml');
+                    updateElementCounts()
+                };
+                reader.readAsText(file);
+                updateLongSelects();
+            }
+        }
+
+        const conditions = ["blinded", "charmed", "deafened", "exhausted", "frightened", "grappled",
+            "incapacitated", "invisible", "paralyzed", "petrified", "poisoned", "prone", "restrained",
+            "stunned", "unconscious"]
+
+        const damages = ['acid', 'bludgeoning', 'cold', 'fire', 'force', 'lightning', 'necrotic',
+            'piercing', 'poison', 'psychic', 'radiant', 'slashing', 'thunder']
+
+        const extra_damages = [
+            "bludgeoning, piercing and slashing from non-magical attacks",
+            "bludgeoning, piercing and slashing from non-magical weapons",
+            "piercing and slashing from non-magical attacks",
+            "piercing and slashing from non-magical weapons",
+            "piercing and slashing from non-magical attacks that aren't adamantine",
+            "piercing and slashing from non-magical weapons that aren't adamantine",
+            "bludgeoning, piercing and slashing from non-magical attacks that aren't adamantine",
+            "bludgeoning, piercing and slashing from non-magical weapons that aren't adamantine",
+            "bludgeoning, piercing and slashing from non-magical weapons that aren't silvered",
+            "bludgeoning, piercing and slashing from non-magical attacks not made with silvered weapons",
+            "damage from spells",
+            "bludgeoning, piercing and slashing (from Stoneskin)"
+        ]
+
+        const misc_actions = ["attacks", "days", "enlarged", "incite", "haste", "healing", "infection",
+            "slowed", "suffocating", "swarms of bats or rats", "telekinesis", "weeks", "wolves"]
+
+
+        function generateSelectionInputs(spanId, inputType, prefix, title, values) {
+            // inputType: checkbox, radio
+            var collapsibleSpan = document.getElementById(spanId);
+
+            // var prefixName = prefix + title + "Types"
+            var prefixName = prefix + title
+
+            values.forEach(function (value) {
+                var valueId = prefix + title + value.charAt(0).toUpperCase() + value.slice(1)
+
+                var input = document.createElement('input');
+                input.type = inputType;
+                input.name = prefixName;
+                input.id = valueId;
+                input.value = value
+
+                var label = document.createElement('label');
+                label.textContent = value;
+                label.htmlFor = valueId;
+
+                // Append label and input to the clickable span
+                collapsibleSpan.appendChild(input);
+                collapsibleSpan.appendChild(label);
+
+                // Add a line break for spacing
+                collapsibleSpan.appendChild(document.createElement('br'));
+
+            });
+        }
+        generateSelectionInputs("actionDamageTypeRadio", "radio", "action", "Damage", damages.concat(conditions).concat(misc_actions));
+        generateSelectionInputs("actionSecondaryDamageTypeRadio", "radio", "action", "SecondrayDamage", damages.concat(conditions).concat(misc_actions));
+        generateSelectionInputs("actionOngoingDamageTypeRadio", "radio", "action", "OngoingDamage", damages.concat(conditions).concat(misc_actions));
+
+        generateSelectionInputs("legendaryActionDamageTypeRadio", "radio", "legendaryaction", "Damage", damages.concat(conditions).concat(misc_actions));
+
+        generateSelectionInputs("monsterDamageVulnerabilitiesCheckbox", "checkbox", "monster", "DamageVulnerabilities", damages.concat(extra_damages));
+        generateSelectionInputs("monsterDamageResistancesCheckbox", "checkbox", "monster", "DamageResistances", damages.concat(extra_damages));
+        generateSelectionInputs("monsterDamageImmunitiesCheckbox", "checkbox", "monster", "DamageImmunities", damages.concat(extra_damages));
+        generateSelectionInputs("monsterConditionImmunitiesCheckbox", "checkbox", "monster", "ConditionImmunities", conditions);
+
+        generateSelectionInputs("traitDamageTypeRadio", "radio", "trait", "Damage", damages.concat(conditions).concat(misc_actions));
+
+        generateSelectionInputs("spellDamageRadio", "radio", "spell", "Damage", damages.concat(conditions).concat(misc_actions));
+        generateSelectionInputs("spellOngoingDamageRadio", "radio", "spell", "OngoingDamage", damages.concat(conditions).concat(misc_actions));
+        generateSelectionInputs("spellSecondaryDamageRadio", "radio", "spell", "SecondaryDamage", damages.concat(conditions).concat(misc_actions));
+
+
+        // When the Add Trait (Action, etc.) button is pressed, add selected option to input
+        function addMonsterElement(elementName) {
+            // Get the selected value from the dropdown
+            var selectedTrait = document.getElementById(`${elementName.toLowerCase()}sLargeDropdown`).value;
+
+            var inputId = "monster" + elementName + "s"
+            console.log(inputId)
+            // Get the current value of the text input
+            var currentTraits = document.getElementById(inputId).value;
+
+            // Append the selected trait to the current value (with a separator, e.g., comma)
+            var updatedTraits = currentTraits ? currentTraits + ', ' + selectedTrait : selectedTrait;
+
+            // Update the text input with the combined traits
+            document.getElementById(inputId).value = updatedTraits;
+        }
+
+        function addMonsterSpell(spellLevel) {
+            var spellLevelName = spellLevel == "cantrip" ? spellLevel : 'level' + spellLevel;
+
+            // Get the selected value from the dropdown
+            var selectedTrait = document.getElementById(`${spellLevelName}sLargeDropdown`).value;
+
+            var inputId = "monster" + spellLevelName + "s"
+            // Get the current value of the text input
+            var currentTraits = document.getElementById(inputId).value;
+
+            // Append the selected trait to the current value (with a separator, e.g., comma)
+            var updatedTraits = currentTraits ? currentTraits + ', ' + selectedTrait : selectedTrait;
+
+            // Update the text input with the combined traits
+            document.getElementById(inputId).value = updatedTraits;
+        }
+
+    </script>
+</body>
+
+</html>

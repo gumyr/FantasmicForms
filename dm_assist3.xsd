@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:simpleType name="AC">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\s*\d+(\s+.*)?"></xs:pattern>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="Action">
+        <xs:sequence>
+            <xs:element name="Summary" type="xs:string" minOccurs="0" />
+            <xs:element name="Parameters" type="xs:string" minOccurs="0" />
+            <xs:element name="Description" type="xs:string" />
+            <xs:element name="AttackMod" type="xs:integer" minOccurs="0" />
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="Damage" type="IntegerOrDice" minOccurs="0" />
+                <xs:element name="DamageType" type="ActionResultType" minOccurs="0" />
+            </xs:sequence>
+            <xs:element name="SecondaryDamage" type="xs:string" minOccurs="0" />
+            <xs:element name="SecondaryDamageType" type="ActionResultType" minOccurs="0" />
+            <xs:element name="OngoingDamage" type="xs:string" minOccurs="0" />
+            <xs:element name="OngoingDamageType" type="ActionResultType" minOccurs="0" />
+            <xs:element name="Uses" type="xs:positiveInteger" minOccurs="0" />
+            <xs:element name="Recharge" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="6|[1-5]-6" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="key" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:simpleType name="Alignment">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Lawful Good" />
+            <xs:enumeration value="Neutral Good" />
+            <xs:enumeration value="Chaotic Good" />
+            <xs:enumeration value="Lawful Neutral" />
+            <xs:enumeration value="Neutral" />
+            <xs:enumeration value="Chaotic Neutral" />
+            <xs:enumeration value="Lawful Evil" />
+            <xs:enumeration value="Neutral Evil" />
+            <xs:enumeration value="Chaotic Evil" />
+            <xs:enumeration value="Any" />
+            <xs:enumeration value="Any Alignment" />
+            <xs:enumeration value="Any Chaotic Alignment" />
+            <xs:enumeration value="Any Evil Alignment" />
+            <xs:enumeration value="Unaligned" />
+            <xs:enumeration value="Neutral" />
+            <xs:enumeration value="Lawful" />
+            <xs:enumeration value="Any Non-Good Alignment" />
+            <xs:enumeration value="Any Non-Lawful Alignment" />
+            <xs:enumeration value="Neutral Good (50%) or Neutral Evil (50%)" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="Creature">
+        <xs:sequence>
+            <xs:element name="Image" type="xs:anyURI" minOccurs="0" />
+            <xs:element name="Size" type="CreatureSize" />
+            <xs:element name="Type" type="CreatureType" />
+            <xs:element name="SubType" type="xs:string" minOccurs="0" />
+            <xs:element name="ShapeChanger" type="xs:boolean" default="false" minOccurs="0" />
+            <xs:element name="Alignment" type="Alignment" />
+            <xs:element name="AC" type="AC" />
+            <xs:element name="HP" type="IntegerOrDice" />
+            <xs:choice minOccurs="1">
+                <xs:element name="Level" type="xs:string" minOccurs="0" />
+                <xs:element name="HitDie" type="xs:integer" minOccurs="0" />
+            </xs:choice>
+            <xs:element name="Speed" type="xs:string" default="30 ft." minOccurs="0" />
+            <xs:element name="AbilityScores">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern
+                            value="\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Saves" type="xs:string" minOccurs="0" />
+            <xs:element name="Skills" type="xs:string" minOccurs="0" />
+            <xs:element name="DamageVulnerabilities" type="DamageImmunityListType" minOccurs="0" />
+            <xs:element name="DamageResistances" type="DamageImmunityListType" minOccurs="0" />
+            <xs:element name="DamageImmunities" type="DamageImmunityListType" minOccurs="0" />
+            <xs:element name="ConditionImmunities" type="ConditionListType" minOccurs="0" />
+            <xs:element name="Senses" type="xs:string" minOccurs="0" />
+            <xs:element name="PassivePerception" type="xs:positiveInteger" minOccurs="0" />
+            <xs:element name="Languages" type="xs:string" minOccurs="0" />
+            <xs:element name="Challenge" type="IntegerOrFraction" />
+            <xs:element name="XP" type="xs:integer" minOccurs="0" />
+            <xs:element name="SpellCasting" type="SpellCasting" minOccurs="0" />
+            <xs:element name="InnateSpellCasting" type="InnateSpellCasting" minOccurs="0" />
+            <xs:element name="Regeneration" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern
+                            value="\s*\d+\s*,\s*\d+\s*" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Traits" type="xs:string" minOccurs="0" />
+            <xs:element name="Actions" type="xs:string" minOccurs="0" />
+            <xs:element name="LegendaryActions" minOccurs="0">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="count" type="xs:integer" use="required" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Reactions" type="xs:string" minOccurs="0" />
+            <xs:element name="Source" type="xs:string" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="key" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:simpleType name="CreatureSize">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Tiny" />
+            <xs:enumeration value="Small" />
+            <xs:enumeration value="Medium" />
+            <xs:enumeration value="Large" />
+            <xs:enumeration value="Huge" />
+            <xs:enumeration value="Gargantuan" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="CreatureType">
+        <xs:restriction base="xs:string">
+            <!-- <xs:pattern
+            value="(Aberration|Beast|Beasts|Celestial|Construct|Dragon|Elemental|Fey|Fiend|Giant|Humanoid|Monstrosity|Ooze|Plant|Undead)[A-Za-z0-9
+            ()]*" /> -->
+            <xs:enumeration value="Aberration" />
+            <xs:enumeration value="Beast" />
+            <xs:enumeration value="Beasts" />
+            <xs:enumeration value="Celestial" />
+            <xs:enumeration value="Construct" />
+            <xs:enumeration value="Dragon" />
+            <xs:enumeration value="Elemental" />
+            <xs:enumeration value="Fey" />
+            <xs:enumeration value="Fiend" />
+            <xs:enumeration value="Giant" />
+            <xs:enumeration value="Humanoid" />
+            <xs:enumeration value="Monstrosity" />
+            <xs:enumeration value="Ooze" />
+            <xs:enumeration value="Plant" />
+            <xs:enumeration value="Swarm of Tiny Beasts" />
+            <xs:enumeration value="Undead" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ActionResultType">
+        <xs:union memberTypes="ConditionType DamageType MiscType" />
+    </xs:simpleType>
+
+    <xs:simpleType name="ConditionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="blinded" />
+            <xs:enumeration value="charmed" />
+            <xs:enumeration value="deafened" />
+            <xs:enumeration value="exhausted" />
+            <xs:enumeration value="frightened" />
+            <xs:enumeration value="grappled" />
+            <xs:enumeration value="incapacitated" />
+            <xs:enumeration value="invisible" />
+            <xs:enumeration value="paralyzed" />
+            <xs:enumeration value="petrified" />
+            <xs:enumeration value="poisoned" />
+            <xs:enumeration value="prone" />
+            <xs:enumeration value="restrained" />
+            <xs:enumeration value="stunned" />
+            <xs:enumeration value="unconscious" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="ConditionListType">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="Item" type="ConditionType" />
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="DiceListType">
+        <xs:list itemType="IntegerOrDice" />
+    </xs:simpleType>
+
+
+    <xs:simpleType name="DamageType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="acid" />
+            <xs:enumeration value="bludgeoning" />
+            <xs:enumeration value="cold" />
+            <xs:enumeration value="fire" />
+            <xs:enumeration value="force" />
+            <xs:enumeration value="lightning" />
+            <xs:enumeration value="necrotic" />
+            <xs:enumeration value="piercing" />
+            <xs:enumeration value="poison" />
+            <xs:enumeration value="psychic" />
+            <xs:enumeration value="radiant" />
+            <xs:enumeration value="slashing" />
+            <xs:enumeration value="thunder" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="ExtraDamageImmunityType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="bludgeoning, piercing and slashing from non-magical attacks" />
+            <xs:enumeration value="bludgeoning, piercing and slashing from non-magical weapons" />
+            <xs:enumeration value="piercing and slashing from non-magical weapons" />
+            <xs:enumeration value="piercing and slashing from non-magical attacks" />
+            <xs:enumeration
+                value="bludgeoning, piercing and slashing from non-magical weapons that aren't silvered" />
+            <xs:enumeration
+                value="piercing and slashing from non-magical weapons that aren't adamantine" />
+            <xs:enumeration
+                value="piercing and slashing from non-magical attacks that aren't adamantine" />
+            <xs:enumeration
+                value="bludgeoning, piercing and slashing from non-magical attacks that aren't adamantine" />
+            <xs:enumeration
+                value="bludgeoning, piercing and slashing from non-magical weapons that aren't adamantine" />
+            <xs:enumeration
+                value="bludgeoning, piercing and slashing from non-magical attacks not made with silvered weapons" />
+            <xs:enumeration value="damage from spells" />
+            <xs:enumeration value="bludgeoning, piercing and slashing (from Stoneskin)" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="DamageImmunityType">
+        <xs:union memberTypes="DamageType ExtraDamageImmunityType" />
+    </xs:simpleType>
+    <xs:complexType name="DamageImmunityListType">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="Item" type="DamageImmunityType" />
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DamageVulnerabilities">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="Item" type="DamageImmunityType" />
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:simpleType name="MiscType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="attacks" />
+            <xs:enumeration value="days" />
+            <xs:enumeration value="enlarged" />
+            <xs:enumeration value="incite" />
+            <xs:enumeration value="haste" />
+            <xs:enumeration value="healing" />
+            <xs:enumeration value="infection" />
+            <xs:enumeration value="slowed" />
+            <xs:enumeration value="suffocating" />
+            <xs:enumeration value="swarms of bats or rats" />
+            <xs:enumeration value="telekinesis" />
+            <xs:enumeration value="weeks" />
+            <xs:enumeration value="wolves" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="InnateSpellCasting">
+        <xs:sequence>
+            <xs:element name="CasterLevel" type="xs:integer" minOccurs="0" />
+            <xs:element name="SpellCastAbility" type="xs:string" />
+            <xs:element name="SpellSaveDc" type="xs:integer" minOccurs="0" />
+            <xs:element name="SpellAttackBonus" type="xs:string" minOccurs="0" />
+            <xs:element name="Spells" type="Spells" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="IntegerOrDice">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\s*\d+|\d*d\d+\s*([+-]\s*\d+)?\s*" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="IntegerOrFraction">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\d+|\d+/\d+" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="Lair">
+        <xs:sequence>
+            <xs:element name="Summary" type="xs:string" />
+            <xs:element name="Image" type="xs:string" />
+            <xs:element name="Description" type="xs:string" />
+            <xs:element name="Traits" type="xs:string" />
+            <xs:element name="Actions" type="xs:string" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="key" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="LegendaryAction">
+        <xs:sequence>
+            <xs:element name="Summary" type="xs:string" />
+            <xs:element name="ActionsUsed" type="xs:positiveInteger" minOccurs="0" />
+            <xs:element name="Description" type="xs:string" />
+            <xs:element name="AttackMod" type="xs:integer" minOccurs="0" />
+            <xs:element name="Damage"
+                type="IntegerOrDice" minOccurs="0" />
+            <xs:element name="DamageType" type="ActionResultType"
+                minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="key" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="NPC">
+        <xs:complexContent>
+            <xs:extension base="Creature">
+                <xs:attribute name="race" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="PC">
+        <xs:sequence>
+            <xs:element name="Image" type="xs:anyURI" minOccurs="0" />
+            <xs:element name="Race" type="xs:string" />
+            <xs:element name="Class" type="xs:string" />
+            <xs:element name="Size" type="CreatureSize" />
+            <xs:element name="Alignment" type="Alignment" />
+            <xs:element name="Senses" type="xs:string" />
+            <xs:element name="Languages" type="xs:string" minOccurs="0" />
+            <xs:element name="Level" type="xs:integer" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="key" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="Reaction">
+        <xs:sequence>
+            <xs:element name="Summary" type="xs:string" minOccurs="0" />
+            <xs:element name="Parameters" type="xs:string" minOccurs="0" />
+            <xs:element name="Description" type="xs:string" />
+            <xs:element name="Damage"
+                type="IntegerOrDice" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="key" type="xs:string" use="required" />
+        <xs:attribute name="required" type="xs:boolean" />
+    </xs:complexType>
+
+    <xs:element name="Root">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="Action" type="Action" maxOccurs="unbounded" />
+                    <xs:element name="Lair" maxOccurs="unbounded" />
+                    <xs:element name="LegendaryAction" maxOccurs="unbounded" />
+                    <xs:element name="Monster" type="Creature" maxOccurs="unbounded" />
+                    <xs:element name="NPC" type="NPC" maxOccurs="unbounded" />
+                    <xs:element name="PlayerCharacter" type="PC" maxOccurs="unbounded" />
+                    <xs:element name="Reaction" type="Reaction" maxOccurs="unbounded" />
+                    <xs:element name="Spell" type="Spell" maxOccurs="unbounded" />
+                    <xs:element name="Swarm" type="Creature" maxOccurs="unbounded" />
+                    <xs:element name="Trait" type="Trait" maxOccurs="unbounded" />
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="Spell">
+        <xs:sequence>
+            <xs:element name="Description" type="SpellDescription" />
+            <xs:element name="Attack" type="SpellAttack" minOccurs="0" />
+            <xs:element name="Damage" type="SpellDamage" minOccurs="0" />
+            <xs:element name="OngoingDamage" type="SpellDamage" minOccurs="0" />
+            <xs:element name="SecondaryDamage" type="SpellDamage" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="school" type="SpellSchool" use="required" />
+        <xs:attribute name="ritual" type="xs:boolean" />
+        <xs:attribute name="level" type="SpellLevel" use="required" />
+        <xs:attribute name="castingTime" type="xs:string" use="required" />
+        <xs:attribute name="range" type="xs:string" use="required" />
+        <xs:attribute name="components" type="xs:string" use="required" />
+        <xs:attribute name="duration" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:simpleType name="SpellCastAbilityType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="WIS" />
+            <xs:enumeration value="INT" />
+            <xs:enumeration value="CHA" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="SpellDescription" mixed="true">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:sequence>
+                <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:simpleType name="SpellSchool">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="abjuration" />
+            <xs:enumeration value="conjuration" />
+            <xs:enumeration value="divination" />
+            <xs:enumeration value="enchantment" />
+            <xs:enumeration value="evocation" />
+            <xs:enumeration value="illusion" />
+            <xs:enumeration value="necromancy" />
+            <xs:enumeration value="transmutation" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="SpellAttack">
+        <xs:sequence>
+            <xs:element name="Amount" type="xs:string" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="attackRoll" type="xs:boolean" />
+        <xs:attribute name="attacks" type="xs:positiveInteger" />
+        <xs:attribute name="ExtraAttackPerLevels" type="xs:positiveInteger" />
+    </xs:complexType>
+
+    <xs:complexType name="SpellCasting">
+        <xs:sequence>
+            <xs:element name="CasterLevel" type="xs:integer" />
+            <xs:element name="SpellCastAbility" type="SpellCastAbilityType" minOccurs="0" />
+            <xs:element name="SpellSaveDc" type="xs:integer" />
+            <xs:element name="SpellAttackBonus" type="xs:string" />
+            <xs:element name="SpellSlots">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="\d+(,\s*\d+)*" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+
+            <xs:element name="Spells" type="Spells" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SpellDamage">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="DamageType" type="SpellDamageType" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="dice" type="IntegerOrDice" />
+        <!-- <xs:attribute name="type" type="SpellDamageType" /> -->
+        <xs:attribute name="progression" type="DiceListType" />
+        <xs:attribute name="extras" type="xs:string" />
+        <xs:attribute name="AddAbility" type="xs:boolean" />
+    </xs:complexType>
+
+    <xs:simpleType name="SpellDamageType">
+        <xs:union memberTypes="ConditionType DamageType SpellMiscType" />
+    </xs:simpleType>
+
+    <xs:simpleType name="SpellLevel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="cantrip" />
+            <xs:enumeration value="0" />
+            <xs:enumeration value="1" />
+            <xs:enumeration value="2" />
+            <xs:enumeration value="3" />
+            <xs:enumeration value="4" />
+            <xs:enumeration value="5" />
+            <xs:enumeration value="6" />
+            <xs:enumeration value="7" />
+            <xs:enumeration value="8" />
+            <xs:enumeration value="9" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SpellMiscType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="necromantic" />
+            <xs:enumeration value="varies" />
+            <xs:enumeration value="HPs of creatures Blinded" />
+            <xs:enumeration value="healing" />
+            <xs:enumeration value="temporary hit points" />
+            <xs:enumeration value="HP max increase" />
+            <xs:enumeration value="color" />
+            <xs:enumeration value="table result" />
+            <xs:enumeration value="HPs" />
+            <xs:enumeration value="on the teleport table" />
+            <xs:enumeration value="turns" />
+            <xs:enumeration value="weakness" />
+            <xs:enumeration value="weapon's damage type" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="Spells">
+        <xs:sequence>
+            <xs:element name="AtWill" type="xs:string" minOccurs="0" />
+            <xs:element name="OncePerDay" type="xs:string" minOccurs="0" />
+            <xs:element name="TwicePerDay" type="xs:string" minOccurs="0" />
+            <xs:element name="ThricePerDay" type="xs:string" minOccurs="0" />
+            <xs:element name="Cantrips" type="xs:string" minOccurs="0" />
+            <xs:element name="Level1" type="xs:string" minOccurs="0" />
+            <xs:element name="Level2" type="xs:string" minOccurs="0" />
+            <xs:element name="Level3" type="xs:string" minOccurs="0" />
+            <xs:element name="Level4" type="xs:string" minOccurs="0" />
+            <xs:element name="Level5" type="xs:string" minOccurs="0" />
+            <xs:element name="Level6" type="xs:string" minOccurs="0" />
+            <xs:element name="Level7" type="xs:string" minOccurs="0" />
+            <xs:element name="Level8" type="xs:string" minOccurs="0" />
+            <xs:element name="Level9" type="xs:string" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Trait">
+        <xs:sequence>
+            <xs:element name="Summary" type="xs:string" minOccurs="0" />
+            <xs:element name="Parameters" type="xs:string" minOccurs="0" />
+            <xs:element name="Description" type="xs:string" />
+            <xs:element name="Relevance" type="xs:string" minOccurs="0" />
+            <xs:element name="Regeneration" type="xs:int" minOccurs="0" />
+            <xs:element name="Damage"
+                type="IntegerOrDice" minOccurs="0" />
+            <xs:element name="DamageType" type="ActionResultType" minOccurs="0" />
+            <xs:element name="Uses" minOccurs="0">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:integer">
+                            <xs:attribute name="recharge_during_encounter" type="xs:boolean"
+                                use="optional" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Recharge" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern
+                            value="6|[1-5]-6" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="key" type="xs:string" use="required" />
+    </xs:complexType>
+
+
+</xs:schema>
